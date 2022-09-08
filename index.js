@@ -55,6 +55,29 @@ const randomStringCharacters =
 ];
 
 /**
+ * Pads the given string to a multiple of 16 bytes with null characters.
+ * 
+ * @param {String} string A string.
+ * @param {Number} [length] Pad to a multiple of this amount. Optional, defaults to 16.
+ * @returns {String} The padded string.
+ * @author Loren Goodwin
+ */
+export function padNull(string, length = 16)
+{
+	const paddingNeeded = length - (string.length % length);
+
+	if (paddingNeeded > 0 && paddingNeeded < length)
+	{
+		for (let i = 0; i < paddingNeeded; i++)
+		{
+			string += "\0";
+		}
+	}
+
+	return string;
+}
+
+/**
  * Generates a cryptographically secure random string.
  *
  * @param {Number} length The length of the random string. Optional, defaults to 20.
@@ -107,4 +130,23 @@ export function random(length = 20)
 	}
 
 	return Result;
+}
+
+/**
+ * Removes trailing null terminators from a string.
+ * 
+ * @param {String} string A string.
+ * @returns {String}
+ * @author Loren Goodwin
+ */
+export function trimNull(string)
+{
+	const nullPosition = string.indexOf("\0");
+	
+	if (nullPosition > -1)
+	{
+		return string.substring(0, nullPosition);
+	}
+
+	return string;
 }
