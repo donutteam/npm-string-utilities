@@ -6,7 +6,7 @@ if (globalThis.crypto == undefined)
 {
 	const nodeCrypto = await import("node:crypto");
 
-	globalThis.crypto = nodeCrypto.webcrypto;
+	globalThis.crypto = nodeCrypto.webcrypto as Crypto;
 }
 
 //
@@ -16,14 +16,14 @@ if (globalThis.crypto == undefined)
 /**
  * Splits the given string into chunks.
  *
- * @param {String} string A string.
- * @param {Number} chunkLength The maximum length of each chunk.
- * @returns {Array<String>} An array of the string chunks.
+ * @param inputString The input string.
+ * @param chunkLength The length of each chunk in the returned string array.
+ * @returns An array of strings, each of which is a chunk of the input string.
  * @author Loren Goodwin
  */
-export function chunkify(string, chunkLength)
+export function chunkify(inputString : string, chunkLength : number) : string[]
 {
-	if (typeof string != "string")
+	if (typeof inputString != "string")
 	{
 		throw new Error("[StringUtil] Cannot chunkify a non-string value.");
 	}
@@ -38,15 +38,11 @@ export function chunkify(string, chunkLength)
 		throw new Error("[StringUtil] Chunkify chunk length must be greater than 0.");
 	}
 
-	return string.match(new RegExp(".{1," + chunkLength.toString() + "}", "gu"));
+	return inputString.match(new RegExp(".{1," + chunkLength.toString() + "}", "gu"));
 }
 
-/**
- * A list of characters available to generateRandomString.
- * 
- * @type {Array<String>}
- */
-const randomStringCharacters = 
+/** A list of characters available to generateRandomString. */
+const randomStringCharacters : string[] = 
 [
 	"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
 	"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
@@ -57,34 +53,34 @@ const randomStringCharacters =
 /**
  * Pads the given string to a multiple of 16 bytes with null characters.
  * 
- * @param {String} string A string.
- * @param {Number} [length] Pad to a multiple of this amount. Optional, defaults to 16.
- * @returns {String} The padded string.
+ * @param inputString A string.
+ * @param length? Pad to a multiple of this amount. Optional, defaults to 16.
+ * @returns A null padded string.
  * @author Loren Goodwin
  */
-export function padNull(string, length = 16)
+export function padNull(inputString : string, length = 16) : string
 {
-	const paddingNeeded = length - (string.length % length);
+	const paddingNeeded = length - (inputString.length % length);
 
 	if (paddingNeeded > 0 && paddingNeeded < length)
 	{
 		for (let i = 0; i < paddingNeeded; i++)
 		{
-			string += "\0";
+			inputString += "\0";
 		}
 	}
 
-	return string;
+	return inputString;
 }
 
 /**
  * Generates a cryptographically secure random string.
  *
- * @param {Number} length The length of the random string. Optional, defaults to 20.
- * @returns {String} A randomly generated string containing A-Z, a-z, 0-9, _ and/or -.
+ * @param length The length of the random string. Optional, defaults to 20.
+ * @returns A randomly generated string containing A-Z, a-z, 0-9, _ and/or -.
  * @author Lucas Cardellini
  */
-export function random(length = 20)
+export function random(length = 20) : string
 {
 	const Input = new Uint8Array(Math.ceil(length / 4) * 3);
 
@@ -135,18 +131,18 @@ export function random(length = 20)
 /**
  * Removes trailing null terminators from a string.
  * 
- * @param {String} string A string.
- * @returns {String}
+ * @param inputString A string.
+ * @returns The string without trailing null terminators.
  * @author Loren Goodwin
  */
-export function trimNull(string)
+export function trimNull(inputString : string) : string
 {
-	const nullPosition = string.indexOf("\0");
+	const nullPosition = inputString.indexOf("\0");
 	
 	if (nullPosition > -1)
 	{
-		return string.substring(0, nullPosition);
+		return inputString.substring(0, nullPosition);
 	}
 
-	return string;
+	return inputString;
 }
