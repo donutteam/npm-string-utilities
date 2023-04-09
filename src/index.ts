@@ -139,41 +139,38 @@ export function random(length = 20) : string
  * @author ChatGPT
  * @author Loren Goodwin
  */
-export async function replaceAllAsync(inputString : string, searchValue : string | RegExp, asyncReplacer : (substring : string, ...args : unknown[]) => Promise<string>) : Promise<string>
+export async function replaceAllAsync(inputString: string, searchValue: string | RegExp, asyncReplacer: (match: string, captureGroups: string[]) => Promise<string>): Promise<string> 
 {
-	const matches = inputString.match(searchValue);
+	const searchRegExp = typeof(searchValue) === "string" ? new RegExp(searchValue, "g") : searchValue;
 
-	if (!matches) 
-	{
-		return inputString;
-	}
-
-	const promises = matches.map(match => asyncReplacer(match));
-
-	const replacements = await Promise.all(promises);
+	const matches = inputString.matchAll(searchRegExp);
 
 	let lastIndex = 0;
 
 	let result = "";
 
-	for (let index = 0; index < matches.length; index++) 
+	for (const match of matches) 
 	{
-		const match = matches[index];
-		const replacement = replacements[index];
-		
-		const matchIndexInString = inputString.indexOf(match, lastIndex);
+		const [fullMatch, ...captureGroups] = match;
 
-		result += inputString.substring(lastIndex, matchIndexInString);
+		const matchIndex = match.index ?? 0;
+
+		const matchLength = fullMatch.length;
+
+		const replacement = await asyncReplacer(fullMatch, captureGroups);
+
+		result += inputString.substring(lastIndex, matchIndex);
 
 		result += replacement;
 
-		lastIndex = matchIndexInString + match.length;
+		lastIndex = matchIndex + matchLength;
 	}
 
 	result += inputString.substring(lastIndex);
 
 	return result;
 }
+  
 
 /**
  * Removes trailing null terminators from a string.
