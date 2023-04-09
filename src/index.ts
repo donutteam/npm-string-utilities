@@ -128,6 +128,53 @@ export function random(length = 20) : string
 	return Result;
 }
 
+
+/**
+ * Removes trailing null terminators from a string.
+ * 
+ * @param inputString The input value.
+ * @param searchValue The value to search for.
+ * @param asyncReplacer A function that returns a promise that resolves to the replacement string.
+ * @returns A promise that resolves to the input string with all instances of the search value replaced by the result of the replacer function.
+ * @author ChatGPT
+ * @author Loren Goodwin
+ */
+export async function replaceAllSync(inputString : string, searchValue : string, asyncReplacer : (substring : string, ...args : unknown[]) => Promise<string>) : Promise<string>
+{
+	const matches = inputString.match(searchValue);
+
+	if (!matches) 
+	{
+		return inputString;
+	}
+
+	const promises = matches.map(match => asyncReplacer(match));
+
+	const replacements = await Promise.all(promises);
+
+	let lastIndex = 0;
+
+	let result = "";
+
+	for (let index = 0; index < matches.length; index++) 
+	{
+		const match = matches[index];
+		const replacement = replacements[index];
+		
+		const matchIndexInString = inputString.indexOf(match, lastIndex);
+
+		result += inputString.substring(lastIndex, matchIndexInString);
+
+		result += replacement;
+
+		lastIndex = matchIndexInString + match.length;
+	}
+
+	result += inputString.substring(lastIndex);
+
+	return result;
+}
+
 /**
  * Removes trailing null terminators from a string.
  * 
