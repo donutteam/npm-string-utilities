@@ -139,7 +139,7 @@ export function random(length = 20) : string
  * @author ChatGPT
  * @author Loren Goodwin
  */
-export async function replaceAllSync(inputString : string, searchValue : string, asyncReplacer : (substring : string, ...args : unknown[]) => Promise<string>) : Promise<string>
+export async function replaceAllAsync(inputString : string, searchValue : string, asyncReplacer : (substring : string, ...args : unknown[]) => Promise<string>) : Promise<string>
 {
 	const matches = inputString.match(searchValue);
 
