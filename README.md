@@ -25,15 +25,24 @@ const chunkedString = chunkify("This is a test", 4);
 // 	[ "This", " is ", "a te", "st" ]
 ```
 
+### isLocalIpAddress
+Checks if the given string is a local IP address.
+
+```js
+import { isLocalIpAddress } from "@donutteam/string-utilities";
+
+const isLocal = isLocalIpAddress("192.168.1.1"); // true
+```
+
 ### padNull
 Pads the given string to a multiple of some amount (defaults to 16 bytes) with null characters.
 
 ```js
 import { padNull } from "@donutteam/string-utilities";
 
-const test1 = await padNull("potato");
+const test1 = padNull("potato");
 
-const test2 = await padNull("salad", 32);
+const test2 = padNull("salad", 32);
 ```
 
 ### random
@@ -68,7 +77,7 @@ Trims null characters off the end of the given string.
 ```js
 import { trimNull } from "@donutteam/string-utilities";
 
-const test1 = await trimNull("potato\0"); // Returns "potato"
+const test1 = trimNull("potato\0"); // Returns "potato"
 ```
 
 ## License
